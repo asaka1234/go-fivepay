@@ -1,18 +1,18 @@
 package go_fivepay
 
 type FivePayInitParams struct {
-	MerchantId string `json:"merchantId" mapstructure:"merchantId" config:"merchantId"  yaml:"merchantId"` // merchantId
-	AccessKey  string `json:"accessKey" mapstructure:"accessKey" config:"accessKey"  yaml:"accessKey"`     // accessKey
-	//DepositUrlByCn string `json:"depositUrlByCn" mapstructure:"depositUrlByCn" config:"depositUrlByCn"  yaml:"depositUrlByCn"` // 请求三方入金地址-中文
-	DepositUrlByEn string `json:"depositUrlByEn" mapstructure:"depositUrlByEn" config:"depositUrlByEn"  yaml:"depositUrlByEn"` // 请求三方入金地址-英文
-	//DepositUrlById  string `json:"depositUrlById" mapstructure:"depositUrlById" config:"depositUrlById"  yaml:"depositUrlById"`     // 请求三方入金地址-印尼
-	//DepositUrlByVi  string `json:"depositUrlByVi" mapstructure:"depositUrlByVi" config:"depositUrlByVi"  yaml:"depositUrlByVi"`     // 请求三方入金地址-越南
-	//DepositUrlByTh  string `json:"depositUrlByTh" mapstructure:"depositUrlByTh" config:"depositUrlByTh"  yaml:"depositUrlByTh"`     // 请求三方入金地址-泰国
-	//WithdrawUrlByCn string `json:"withdrawUrlByCn" mapstructure:"withdrawUrlByCn" config:"withdrawUrlByCn"  yaml:"withdrawUrlByCn"` // 请求三方出金地址-中文
-	WithdrawUrlByEn string `json:"withdrawUrlByEn" mapstructure:"withdrawUrlByEn" config:"withdrawUrlByEn"  yaml:"withdrawUrlByEn"` // 请求三方出金地址-英文
-	//WithdrawUrlById string `json:"withdrawUrlById" mapstructure:"withdrawUrlById" config:"withdrawUrlById"  yaml:"withdrawUrlById"` // 请求三方出金地址-印尼
-	//WithdrawUrlByVi string `json:"withdrawUrlByVi" mapstructure:"withdrawUrlByVi" config:"withdrawUrlByVi"  yaml:"withdrawUrlByVi"` // 请求三方出金地址-越南
-	//WithdrawUrlByTh string `json:"withdrawUrlByTh" mapstructure:"withdrawUrlByTh" config:"withdrawUrlByTh"  yaml:"withdrawUrlByTh"` // 请求三方出金地址-泰国
+	MerchantId          string `json:"merchantId" mapstructure:"merchantId" config:"merchantId"  yaml:"merchantId"`                                     // merchantId
+	AccessKey           string `json:"accessKey" mapstructure:"accessKey" config:"accessKey"  yaml:"accessKey"`                                         // accessKey
+	DepositUrlByCn      string `json:"depositUrlByCn" mapstructure:"depositUrlByCn" config:"depositUrlByCn"  yaml:"depositUrlByCn"`                     // 请求三方入金地址-中文
+	DepositUrlByEn      string `json:"depositUrlByEn" mapstructure:"depositUrlByEn" config:"depositUrlByEn"  yaml:"depositUrlByEn"`                     // 请求三方入金地址-英文
+	DepositUrlById      string `json:"depositUrlById" mapstructure:"depositUrlById" config:"depositUrlById"  yaml:"depositUrlById"`                     // 请求三方入金地址-印尼
+	DepositUrlByVi      string `json:"depositUrlByVi" mapstructure:"depositUrlByVi" config:"depositUrlByVi"  yaml:"depositUrlByVi"`                     // 请求三方入金地址-越南
+	DepositUrlByTh      string `json:"depositUrlByTh" mapstructure:"depositUrlByTh" config:"depositUrlByTh"  yaml:"depositUrlByTh"`                     // 请求三方入金地址-泰国
+	WithdrawUrlByCn     string `json:"withdrawUrlByCn" mapstructure:"withdrawUrlByCn" config:"withdrawUrlByCn"  yaml:"withdrawUrlByCn"`                 // 请求三方出金地址-中文
+	WithdrawUrlByEn     string `json:"withdrawUrlByEn" mapstructure:"withdrawUrlByEn" config:"withdrawUrlByEn"  yaml:"withdrawUrlByEn"`                 // 请求三方出金地址-英文
+	WithdrawUrlById     string `json:"withdrawUrlById" mapstructure:"withdrawUrlById" config:"withdrawUrlById"  yaml:"withdrawUrlById"`                 // 请求三方出金地址-印尼
+	WithdrawUrlByVi     string `json:"withdrawUrlByVi" mapstructure:"withdrawUrlByVi" config:"withdrawUrlByVi"  yaml:"withdrawUrlByVi"`                 // 请求三方出金地址-越南
+	WithdrawUrlByTh     string `json:"withdrawUrlByTh" mapstructure:"withdrawUrlByTh" config:"withdrawUrlByTh"  yaml:"withdrawUrlByTh"`                 // 请求三方出金地址-泰国
 	NotifyUrlByDeposit  string `json:"notifyUrlByDeposit" mapstructure:"notifyUrlByDeposit" config:"notifyUrlByDeposit"  yaml:"notifyUrlByDeposit"`     //入金回调通知地址
 	NotifyUrlByWithdraw string `json:"notifyUrlByWithdraw" mapstructure:"notifyUrlByWithdraw" config:"notifyUrlByWithdraw"  yaml:"notifyUrlByWithdraw"` //出金回调通知地址
 	ReturnUrl           string `json:"returnUrl" mapstructure:"returnUrl" config:"returnUrl"  yaml:"returnUrl"`                                         //付款页重定向到该URL

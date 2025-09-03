@@ -34,6 +34,8 @@ func (cli *Client) Deposit(req FivePayPaymentHandleReq) (map[string]interface{},
 	paramEncrypt["sign"] = signature
 	fmt.Println("Final Params (with sign):", paramEncrypt)
 
+	paramEncrypt["url"] = cli.Params.DepositUrlByEn     //发送请求的psp地址
+	paramEncrypt["payLink"] = cli.Params.DepositUrlByEn //发送请求的psp地址
 	return paramEncrypt, nil
 
 	////----------------------

@@ -1,18 +1,16 @@
 package go_fivepay
 
 import (
-	"crypto/tls"
 	"fmt"
 	"github.com/asaka1234/go-fivepay/utils"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/cast"
 	"log"
 )
 
 // 集成接口
-func (cli *Client) Deposit(req FivePayPaymentHandleReq) (*FivePayPaymentHandleRsp, error) {
-	rawURL := cli.Params.DepositUrlByEn
+func (cli *Client) Deposit(req FivePayPaymentHandleReq) (map[string]string, error) {
+	//rawURL := cli.Params.DepositUrlByEn
 
 	var param map[string]string
 	mapstructure.Decode(req, &param)
@@ -27,6 +25,7 @@ func (cli *Client) Deposit(req FivePayPaymentHandleReq) (*FivePayPaymentHandleRs
 	paramEncrypt, err := utils.EncryptAll(param, cli.Params.AccessKey)
 	if err != nil {
 		log.Fatalf("Error encrypting parameters: %v", err)
+		return nil, err
 	}
 	fmt.Println("Encrypted Params (before sign):", paramEncrypt)
 
@@ -35,42 +34,44 @@ func (cli *Client) Deposit(req FivePayPaymentHandleReq) (*FivePayPaymentHandleRs
 	paramEncrypt["sign"] = signature
 	fmt.Println("Final Params (with sign):", paramEncrypt)
 
-	//----------------------
-	var result FivePayPaymentHandleRsp
+	return paramEncrypt, nil
 
-	resp, err := cli.ryClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}).
-		SetCloseConnection(true).
-		R().
-		SetHeader("Content-Type", "application/x-www-form-urlencoded").
-		SetFormData(paramEncrypt).
-		SetDebug(cli.debugMode).
-		SetResult(&result).
-		SetError(&result).
-		Post(rawURL)
-
-	restLog, _ := jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(utils.GetRestyLog(resp))
-	cli.logger.Infof("PSPResty#fivepay#deposit->%s", string(restLog))
-
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode() != 200 {
-		return nil, fmt.Errorf("status code: %d", resp.StatusCode())
-	}
-
-	if resp.Error() != nil {
-		//反序列化错误会在此捕捉
-		return nil, fmt.Errorf("%v, body:%s", resp.Error(), resp.Body())
-	}
-
-	// Log response
-	responseStr := string(resp.Body())
-
-	// Build response struct
-	rsp := &FivePayPaymentHandleRsp{
-		HTMLString: responseStr,
-	}
-
-	return rsp, nil
+	////----------------------
+	//var result FivePayPaymentHandleRsp
+	//
+	//resp, err := cli.ryClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}).
+	//	SetCloseConnection(true).
+	//	R().
+	//	SetHeader("Content-Type", "application/x-www-form-urlencoded").
+	//	SetFormData(paramEncrypt).
+	//	SetDebug(cli.debugMode).
+	//	SetResult(&result).
+	//	SetError(&result).
+	//	Post(rawURL)
+	//
+	//restLog, _ := jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(utils.GetRestyLog(resp))
+	//cli.logger.Infof("PSPResty#fivepay#deposit->%s", string(restLog))
+	//
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//if resp.StatusCode() != 200 {
+	//	return nil, fmt.Errorf("status code: %d", resp.StatusCode())
+	//}
+	//
+	//if resp.Error() != nil {
+	//	//反序列化错误会在此捕捉
+	//	return nil, fmt.Errorf("%v, body:%s", resp.Error(), resp.Body())
+	//}
+	//
+	//// Log response
+	//responseStr := string(resp.Body())
+	//
+	//// Build response struct
+	//rsp := &FivePayPaymentHandleRsp{
+	//	HTMLString: responseStr,
+	//}
+	//
+	//return rsp, nil
 }

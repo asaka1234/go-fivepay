@@ -70,5 +70,26 @@ type FivePayWithdrawHandleReq struct {
 }
 
 type FivePayWithdrawHandleRsp struct {
-	HTMLString string `json:"HTMLString" mapstructure:"HTMLString"`
+	//HTMLString string `json:"HTMLString" mapstructure:"HTMLString"`
+	OrderNo         string `json:"orderNo" mapstructure:"orderNo"`                 //平台给商家的唯一ID
+	CurrencyCode    string `json:"currencyCode" mapstructure:"currencyCode"`       //币种
+	MerchantId      string `json:"merchantId" mapstructure:"merchantId"`           //商户号
+	MemberId        string `json:"memberId" mapstructure:"memberId"`               //会员ID
+	ChannelName     string `json:"channelName" mapstructure:"channelName"`         //OTC only
+	OrderAmount     string `json:"orderAmount" mapstructure:"orderAmount"`         //订单金额
+	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` //商家未分配给订单的唯一订单
+	Status          string `json:"status" mapstructure:"status"`                   //1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
+	Sign            string `json:"sign" mapstructure:"sign"`                       //签名
+}
+
+type FivePayWithdrawBackReq struct {
+	OrderNo         string `json:"orderNo" mapstructure:"orderNo"`                 //平台给商家的唯一ID
+	CurrencyCode    string `json:"currencyCode" mapstructure:"currencyCode"`       //币种
+	MerchantId      string `json:"merchantId" mapstructure:"merchantId"`           //商户号
+	MemberId        string `json:"memberId" mapstructure:"memberId"`               //会员ID
+	ChannelName     string `json:"channelName" mapstructure:"channelName"`         //OTC only
+	OrderAmount     string `json:"orderAmount" mapstructure:"orderAmount"`         //订单金额
+	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` //商家未分配给订单的唯一订单
+	Status          string `json:"status" mapstructure:"status"`                   //1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
+	Sign            string `json:"sign" mapstructure:"sign"`                       //签名
 }

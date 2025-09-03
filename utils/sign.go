@@ -16,7 +16,7 @@ import (
 )
 
 // 字母顺序a-z排序，并串联对应的值（value1value2 ...valueN）转换为字符串，先使用 SHA1 签名，然后使用 MD5 签名，并转换为小写字母
-func DepositSign(params map[string]string) string {
+func DepositSign(params map[string]interface{}) string {
 	keys := make([]string, 0, len(params))
 	for k := range params {
 		keys = append(keys, k)
@@ -29,7 +29,7 @@ func DepositSign(params map[string]string) string {
 		if k == "sign" {
 			continue
 		}
-		strBuilder.WriteString(params[k])
+		strBuilder.WriteString(params[k].(string))
 	}
 	signStr := strBuilder.String()
 
@@ -53,8 +53,8 @@ func DepositSign(params map[string]string) string {
 }
 
 // EncryptAll 加密所有需要加密的参数
-func EncryptAll(params map[string]string, accessKey string) (map[string]string, error) {
-	paramEncrypt := make(map[string]string)
+func EncryptAll(params map[string]interface{}, accessKey string) (map[string]interface{}, error) {
+	paramEncrypt := make(map[string]interface{})
 
 	paramEncrypt["merchantId"] = params["merchantId"] // merchantId 不加密
 
@@ -63,10 +63,10 @@ func EncryptAll(params map[string]string, accessKey string) (map[string]string, 
 	for _, field := range fieldsToEncrypt {
 		val := params[field]
 		if field == "merchantOrderNo" {
-			val = strings.ToLower(val) // merchantOrderNo 需要小写
+			val = strings.ToLower(val.(string)) // merchantOrderNo 需要小写
 		}
 
-		encryptedVal, err := encrypt(val, accessKey)
+		encryptedVal, err := encrypt(val.(string), accessKey)
 		if err != nil {
 			return nil, fmt.Errorf("failed to encrypt %s: %w", field, err)
 		}
@@ -127,8 +127,8 @@ func encrypt(data, secret string) (string, error) {
 //---------------
 
 // DecryptAll 解密所有需要解密的参数
-func DecryptAll(params map[string]string, accessKey string) (map[string]string, error) {
-	paramDecrypt := make(map[string]string)
+func DecryptAll(params map[string]interface{}, accessKey string) (map[string]interface{}, error) {
+	paramDecrypt := make(map[string]interface{})
 
 	paramDecrypt["merchantId"] = params["merchantId"] // merchantId 不解密
 
@@ -137,10 +137,10 @@ func DecryptAll(params map[string]string, accessKey string) (map[string]string, 
 	for _, field := range fieldsToEncrypt {
 		val := params[field]
 		if field == "merchantOrderNo" {
-			val = strings.ToLower(val) // merchantOrderNo 需要小写
+			val = strings.ToLower(val.(string)) // merchantOrderNo 需要小写
 		}
 
-		decryptedVal, err := decrypt(val, accessKey)
+		decryptedVal, err := decrypt(val.(string), accessKey)
 		if err != nil {
 			return nil, fmt.Errorf("failed to encrypt %s: %w", field, err)
 		}
@@ -154,7 +154,7 @@ func DecryptAll(params map[string]string, accessKey string) (map[string]string, 
 	return paramDecrypt, nil
 }
 
-func DepositBackSign(params map[string]string) string {
+func DepositBackSign(params map[string]interface{}) string {
 	keys := make([]string, 0, len(params))
 	for k := range params {
 		keys = append(keys, k)
@@ -167,7 +167,7 @@ func DepositBackSign(params map[string]string) string {
 		if k == "sign" || k == "merchantId" {
 			continue
 		}
-		strBuilder.WriteString(params[k])
+		strBuilder.WriteString(params[k].(string))
 	}
 	signStr := strBuilder.String()
 
@@ -213,7 +213,7 @@ func decrypt(data, secret string) (string, error) {
 	return hex.EncodeToString(crypted), nil
 }
 
-func DepositBackVerify(params map[string]string, signKey string) (bool, error) {
+func DepositBackVerify(params map[string]interface{}, signKey string) (bool, error) {
 	// Check if signature exists in params
 	signature, exists := params["sign"]
 	if !exists {

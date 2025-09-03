@@ -10,10 +10,10 @@ import (
 
 // 集成接口
 // TODO withdraw不需要等待回调
-func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]string, error) {
+func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{}, error) {
 	//rawURL := cli.Params.WithdrawUrlByEn
 
-	var param map[string]string
+	var param map[string]interface{}
 	mapstructure.Decode(req, &param)
 
 	//补充字段

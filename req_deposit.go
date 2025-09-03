@@ -9,10 +9,10 @@ import (
 )
 
 // 集成接口
-func (cli *Client) Deposit(req FivePayPaymentHandleReq) (map[string]string, error) {
+func (cli *Client) Deposit(req FivePayPaymentHandleReq) (map[string]interface{}, error) {
 	//rawURL := cli.Params.DepositUrlByEn
 
-	var param map[string]string
+	var param map[string]interface{}
 	mapstructure.Decode(req, &param)
 
 	//补充字段

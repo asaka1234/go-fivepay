@@ -2,11 +2,13 @@ package utils
 
 import (
 	"bytes"
+	"crypto/aes"
 	"crypto/cipher"
 	"crypto/des"
 	"crypto/md5"
 	"crypto/sha1"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"github.com/spf13/cast"
 	"log"
@@ -29,7 +31,11 @@ func DepositSign(params map[string]interface{}) string {
 		if k == "sign" {
 			continue
 		}
-		strBuilder.WriteString(params[k].(string))
+		if k == "merchantId" {
+			strBuilder.WriteString(cast.ToString(params[k].(int)))
+		} else {
+			strBuilder.WriteString(params[k].(string))
+		}
 	}
 	signStr := strBuilder.String()
 
@@ -88,10 +94,31 @@ func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 }
 
 // PKCS7UnPadding 去填充函数
-func PKCS7UnPadding(origData []byte) []byte {
+func PKCS7UnPadding(origData []byte) ([]byte, error) {
+	//length := len(origData)
+	//unpadding := int(origData[length-1])
+	//return origData[:(length - unpadding)]
 	length := len(origData)
-	unpadding := int(origData[length-1])
-	return origData[:(length - unpadding)]
+	if length == 0 {
+		return nil, errors.New("输入数据为空")
+	}
+
+	// 获取填充字节数
+	unPadding := int(origData[length-1])
+
+	// 验证填充是否有效
+	if unPadding > aes.BlockSize || unPadding == 0 {
+		return nil, errors.New(string(origData) + " 无效的PKCS7填充")
+	}
+
+	// 验证所有填充字节是否正确
+	for i := length - unPadding; i < length; i++ {
+		if int(origData[i]) != unPadding {
+			return nil, errors.New("无效的PKCS7填充")
+		}
+	}
+
+	return origData[:(length - unPadding)], nil
 }
 
 // encrypt 使用 TripleDES DES-EDE3-CBC 模式加密
@@ -133,21 +160,17 @@ func DecryptAll(params map[string]interface{}, accessKey string) (map[string]int
 	paramDecrypt["merchantId"] = params["merchantId"] // merchantId 不解密
 
 	// 其他字段解密
-	fieldsToEncrypt := []string{"orderAmount", "currencyCode", "merchantOrderNo", "memberId", "name", "email"}
-	for _, field := range fieldsToEncrypt {
-		val := params[field]
-		if field == "merchantOrderNo" {
-			val = strings.ToLower(val.(string)) // merchantOrderNo 需要小写
-		}
+	fieldsToDecrypt := []string{"orderAmount", "currencyCode", "merchantOrderNo", "memberId"}
+	for _, field := range fieldsToDecrypt {
+		val := strings.ToUpper(params[field].(string))
 
-		decryptedVal, err := decrypt(val.(string), accessKey)
+		decryptedVal, err := decrypt(val, accessKey)
 		if err != nil {
 			return nil, fmt.Errorf("failed to encrypt %s: %w", field, err)
 		}
 		paramDecrypt[field] = decryptedVal
 	}
 
-	// 这里的 URL 需要根据你的 Go 应用的实际回调地址设置
 	paramDecrypt["notifyUrl"] = params["notifyUrl"]
 	paramDecrypt["returnUrl"] = params["returnUrl"]
 
@@ -192,25 +215,38 @@ func DepositBackSign(params map[string]interface{}) string {
 
 // decrypt 使用 TripleDES DES-EDE3-CBC 模式解密
 func decrypt(data, secret string) (string, error) {
-	key := []byte(secret)
-
-	if len(key) != 24 {
-		return "", fmt.Errorf("TripleDES key must be 24 bytes long, got %d", len(key))
-	}
-	iv := key[:8] // IV 是密钥的前 8 字节
-
-	block, err := des.NewTripleDESCipher(key)
+	// 16进制解码
+	messageBytes, err := hex.DecodeString(data)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("hex解码失败: %v", err)
 	}
 
-	origData := PKCS7UnPadding([]byte(data))
+	// 检查密钥长度
+	if len(secret) != 24 {
+		return "", fmt.Errorf("密钥必须为24字节")
+	}
 
-	blockMode := cipher.NewCBCDecrypter(block, iv)
-	crypted := make([]byte, len(origData))
-	blockMode.CryptBlocks(crypted, origData)
+	// 创建3DES cipher
+	block, err := des.NewTripleDESCipher([]byte(secret))
+	if err != nil {
+		return "", fmt.Errorf("创建cipher失败: %v", err)
+	}
 
-	return hex.EncodeToString(crypted), nil
+	// 使用前8字节作为IV
+	iv := []byte(secret)[:8]
+
+	// CBC模式解密
+	mode := cipher.NewCBCDecrypter(block, iv)
+	plaintext := make([]byte, len(messageBytes))
+	mode.CryptBlocks(plaintext, messageBytes)
+
+	// PKCS7反填充
+	unpadded, err := PKCS7UnPadding(plaintext)
+	if err != nil {
+		return "", fmt.Errorf("去除填充失败: %v", err)
+	}
+
+	return string(unpadded), nil
 }
 
 func DepositBackVerify(params map[string]interface{}, signKey string) (bool, error) {

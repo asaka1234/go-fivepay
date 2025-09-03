@@ -24,8 +24,9 @@ const (
 	//WITHDRAW_URL_BY_VI = "http://uat.vi-payment.my5pay.com/f2fOrder/checkout"
 	//WITHDRAW_URL_BY_TH = "http://uat.th-payment.my5pay.com/f2fOrder/checkout"
 
-	NOTIFY_URL = "https://api.cptmarkets.com/fapi/cpti/payment/psp/fivepay/deposit/back"
-	RETURN_URL = "https://portal.cptmarkets.com/zh/depositReport"
+	NOTIFY_URL_BY_DEPOSIT  = "https://api-test.logtec.dev/fapi/cpti/payment/psp/fivepay/deposit/back" //"https://api.cptmarkets.com/fapi/cpti/payment/psp/fivepay/deposit/back"
+	NOTIFY_URL_BY_WITHDRAW = "https://api.cptmarkets.com/fapi/cpti/payment/psp/fivepay/withdraw/back"
+	RETURN_URL             = "https://portal.cptmarkets.com/zh/depositReport"
 )
 
 // GetName returns the name of the event type (same as value in this case)

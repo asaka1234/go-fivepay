@@ -8,8 +8,6 @@ import (
 	"log"
 )
 
-// 集成接口
-// TODO withdraw不需要等待回调
 func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{}, error) {
 	//rawURL := cli.Params.WithdrawUrlByEn
 
@@ -17,9 +15,9 @@ func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{
 	mapstructure.Decode(req, &param)
 
 	//补充字段
-	param["merchantId"] = cast.ToString(cli.Params.MerchantId)
+	param["merchantId"] = cast.ToInt(cli.Params.MerchantId)
 	param["returnUrl"] = cast.ToString(cli.Params.ReturnUrl)
-	param["notifyUrl"] = cast.ToString(cli.Params.NotifyUrl)
+	param["notifyUrl"] = cast.ToString(cli.Params.NotifyUrlByWithdraw)
 
 	// 1. 加密所有需要加密的参数
 	paramEncrypt, err := utils.EncryptAll(param, cli.Params.AccessKey)
@@ -34,35 +32,16 @@ func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{
 	paramEncrypt["sign"] = signature
 	fmt.Println("Final Params (with sign):", paramEncrypt)
 
+	if req.CurrencyCode == "VND" {
+		paramEncrypt["url"] = cli.Params.DepositUrlByVi
+	} else if req.CurrencyCode == "IDR" {
+		paramEncrypt["url"] = cli.Params.DepositUrlById
+	} else if req.CurrencyCode == "THB" {
+		paramEncrypt["url"] = cli.Params.DepositUrlByTh
+	} else if req.CurrencyCode == "CNY" {
+		paramEncrypt["url"] = cli.Params.DepositUrlByCn
+	} else {
+		paramEncrypt["url"] = cli.Params.DepositUrlByEn
+	}
 	return paramEncrypt, nil
-	//----------------------
-	//var result FivePayWithdrawHandleRsp
-	//
-	//resp, err := cli.ryClient.SetTLSClientConfig(&tls.Config{InsecureSkipVerify: true}).
-	//	SetCloseConnection(true).
-	//	R().
-	//	SetHeader("Content-Type", "application/x-www-form-urlencoded").
-	//	SetFormData(paramEncrypt).
-	//	SetDebug(cli.debugMode).
-	//	SetResult(&result).
-	//	SetError(&result).
-	//	Post(rawURL)
-	//
-	//restLog, _ := jsoniter.ConfigCompatibleWithStandardLibrary.Marshal(utils.GetRestyLog(resp))
-	//cli.logger.Infof("PSPResty#fivepay#withdraw->%s", string(restLog))
-	//
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//if resp.StatusCode() != 200 {
-	//	return nil, fmt.Errorf("status code: %d", resp.StatusCode())
-	//}
-	//
-	//if resp.Error() != nil {
-	//	//反序列化错误会在此捕捉
-	//	return nil, fmt.Errorf("%v, body:%s", resp.Error(), resp.Body())
-	//}
-	//
-	//return &result, nil
 }

@@ -8,11 +8,11 @@ type FivePayInitParams struct {
 	DepositUrlById      string `json:"depositUrlById" mapstructure:"depositUrlById" config:"depositUrlById"  yaml:"depositUrlById"`                     // 请求三方入金地址-印尼
 	DepositUrlByVi      string `json:"depositUrlByVi" mapstructure:"depositUrlByVi" config:"depositUrlByVi"  yaml:"depositUrlByVi"`                     // 请求三方入金地址-越南
 	DepositUrlByTh      string `json:"depositUrlByTh" mapstructure:"depositUrlByTh" config:"depositUrlByTh"  yaml:"depositUrlByTh"`                     // 请求三方入金地址-泰国
-	WithdrawUrlByCn     string `json:"withdrawUrlByCn" mapstructure:"withdrawUrlByCn" config:"withdrawUrlByCn"  yaml:"withdrawUrlByCn"`                 // 请求三方出金地址-中文
-	WithdrawUrlByEn     string `json:"withdrawUrlByEn" mapstructure:"withdrawUrlByEn" config:"withdrawUrlByEn"  yaml:"withdrawUrlByEn"`                 // 请求三方出金地址-英文
-	WithdrawUrlById     string `json:"withdrawUrlById" mapstructure:"withdrawUrlById" config:"withdrawUrlById"  yaml:"withdrawUrlById"`                 // 请求三方出金地址-印尼
-	WithdrawUrlByVi     string `json:"withdrawUrlByVi" mapstructure:"withdrawUrlByVi" config:"withdrawUrlByVi"  yaml:"withdrawUrlByVi"`                 // 请求三方出金地址-越南
-	WithdrawUrlByTh     string `json:"withdrawUrlByTh" mapstructure:"withdrawUrlByTh" config:"withdrawUrlByTh"  yaml:"withdrawUrlByTh"`                 // 请求三方出金地址-泰国
+	DepositByF2fUrlByCn string `json:"depositByF2fUrlByCn" mapstructure:"depositByF2fUrlByCn" config:"depositByF2fUrlByCn"  yaml:"depositByF2fUrlByCn"` // 请求三方入金地址-中文
+	DepositByF2fUrlByEn string `json:"depositByF2fUrlByEn" mapstructure:"depositByF2fUrlByEn" config:"depositByF2fUrlByEn"  yaml:"depositByF2fUrlByEn"` // 请求三方入金地址-英文
+	DepositByF2fUrlById string `json:"depositByF2fUrlById" mapstructure:"depositByF2fUrlById" config:"depositByF2fUrlById"  yaml:"depositByF2fUrlById"` // 请求三方入金地址-印尼
+	DepositByF2fUrlByVi string `json:"depositByF2fUrlByVi" mapstructure:"depositByF2fUrlByVi" config:"depositByF2fUrlByVi"  yaml:"depositByF2fUrlByVi"` // 请求三方入金地址-越南
+	DepositByF2fUrlByTh string `json:"depositByF2fUrlByTh" mapstructure:"depositByF2fUrlByTh" config:"depositByF2fUrlByTh"  yaml:"depositByF2fUrlByTh"` // 请求三方入金地址-泰国
 	NotifyUrlByDeposit  string `json:"notifyUrlByDeposit" mapstructure:"notifyUrlByDeposit" config:"notifyUrlByDeposit"  yaml:"notifyUrlByDeposit"`     //入金回调通知地址
 	NotifyUrlByWithdraw string `json:"notifyUrlByWithdraw" mapstructure:"notifyUrlByWithdraw" config:"notifyUrlByWithdraw"  yaml:"notifyUrlByWithdraw"` //出金回调通知地址
 	ReturnUrlByDeposit  string `json:"returnUrlByDeposit" mapstructure:"returnUrlByDeposit" config:"returnUrlByDeposit"  yaml:"returnUrlByDeposit"`
@@ -64,8 +64,8 @@ type FivePayPaymentBackRsp struct {
 	Status          string `json:"status" mapstructure:"status"`                   // 订单状态 1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
 }
 
-// withdraw
-type FivePayWithdrawHandleReq struct {
+// deposit - f2f
+type FivePayDepositByF2fHandleReq struct {
 	MemberId        string `json:"memberId" mapstructure:"memberId"`               // CRM Member Id
 	Email           string `json:"email" mapstructure:"email"`                     // CRM Member Email
 	Name            string `json:"name" mapstructure:"name"`                       // CRM Member Name, this name must be the bank account holder name which used to make transaction. MANDATORY for THB
@@ -78,8 +78,7 @@ type FivePayWithdrawHandleReq struct {
 	//MerchantId  int `json:"merchantId" mapstructure:"merchantId" config:"merchantId"  yaml:"merchantId"`     // merchantId
 }
 
-type FivePayWithdrawHandleRsp struct {
-	//HTMLString string `json:"HTMLString" mapstructure:"HTMLString"`
+type FivePayDepositByF2fHandleRsp struct {
 	OrderNo         string `json:"orderNo" mapstructure:"orderNo"`                 //平台给商家的唯一ID
 	CurrencyCode    string `json:"currencyCode" mapstructure:"currencyCode"`       //币种
 	MerchantId      string `json:"merchantId" mapstructure:"merchantId"`           //商户号
@@ -91,7 +90,7 @@ type FivePayWithdrawHandleRsp struct {
 	Sign            string `json:"sign" mapstructure:"sign"`                       //签名
 }
 
-type FivePayWithdrawBackReq struct {
+type FivePayDepositByF2fBackReq struct {
 	OrderNo         string `json:"orderNo" mapstructure:"orderNo"`                 //平台给商家的唯一ID
 	CurrencyCode    string `json:"currencyCode" mapstructure:"currencyCode"`       //币种
 	MerchantId      int    `json:"merchantId" mapstructure:"merchantId"`           //商户号
@@ -103,14 +102,14 @@ type FivePayWithdrawBackReq struct {
 	Sign            string `json:"sign" mapstructure:"sign"`
 }
 
-type FivePayWithdrawBackRsp struct {
+type FivePayDepositByF2fBackRsp struct {
 	OrderNo         string `json:"orderNo" mapstructure:"orderNo"`                 // 平台给商家的唯一ID
 	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` // 商户订单号
 	OrderAmount     string `json:"orderAmount" mapstructure:"orderAmount"`         // 订单金额
 	Status          string `json:"status" mapstructure:"status"`                   // 订单状态 1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
 }
 
-// withdraw by cw
+// deposit - cw
 type FivePayWithdrawByCwReq struct {
 	MerchantId      int    `json:"merchantId" mapstructure:"merchantId"`           //平台给商家的唯一ID
 	TokenId         int    `json:"tokenId" mapstructure:"tokenId"`                 //1 – USDT 2 – ETH 4 – BNB 5 – BTC

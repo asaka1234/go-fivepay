@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestWithdraw(t *testing.T) {
+func TestDepositByF2f(t *testing.T) {
 	vLog := VLog{}
 	//构造client
 	cli := NewClient(vLog, &FivePayInitParams{
@@ -20,7 +20,7 @@ func TestWithdraw(t *testing.T) {
 	})
 
 	//发请求
-	resp, err := cli.Withdraw(GenWithdrawRequestDemo())
+	resp, err := cli.DepositByF2f(GenDepositByF2fRequestDemo())
 	if err != nil {
 		fmt.Printf("err:%s\n", err.Error())
 		return
@@ -29,8 +29,8 @@ func TestWithdraw(t *testing.T) {
 	fmt.Printf("resp:%+v\n", resp)
 }
 
-func GenWithdrawRequestDemo() FivePayWithdrawHandleReq {
-	return FivePayWithdrawHandleReq{
+func GenDepositByF2fRequestDemo() FivePayDepositByF2fHandleReq {
+	return FivePayDepositByF2fHandleReq{
 		CurrencyCode:    "VND", // 暂时支持MYR，VND，THB，HKD，IDR
 		OrderAmount:     "100000",
 		Name:            "jane",

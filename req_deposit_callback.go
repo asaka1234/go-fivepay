@@ -36,8 +36,8 @@ func (cli *Client) PaymentCallback(req FivePayPaymentBackReq, processor func(Fiv
 	return processor(rsp)
 }
 
-func (cli *Client) WithdrawCallBack(req FivePayWithdrawBackReq, processor func(FivePayWithdrawBackRsp) error) error {
-	log.Printf("FivePay#withdraw#back#req: %+v", req)
+func (cli *Client) DepositByF2fCallBack(req FivePayDepositByF2fBackReq, processor func(FivePayDepositByF2fBackRsp) error) error {
+	log.Printf("FivePay#DepositByF2f#back#req: %+v", req)
 	var params map[string]interface{}
 	mapstructure.Decode(req, &params)
 
@@ -47,8 +47,8 @@ func (cli *Client) WithdrawCallBack(req FivePayWithdrawBackReq, processor func(F
 		return errors.New("sign verify error")
 	}
 
-	params["notifyUrl"] = cli.Params.NotifyUrlByWithdraw
-	params["returnUrl"] = cli.Params.NotifyUrlByWithdraw
+	params["notifyUrl"] = cli.Params.NotifyUrlByDeposit
+	params["returnUrl"] = cli.Params.ReturnUrlByDeposit
 
 	// 2. 解密所有需要解密的参数
 	paramDecrypt, err := utils.DecryptAll(params, cli.Params.AccessKey)
@@ -57,7 +57,7 @@ func (cli *Client) WithdrawCallBack(req FivePayWithdrawBackReq, processor func(F
 	}
 	fmt.Println("FivePay deposit callback decrypted Params :", paramDecrypt)
 
-	var rsp FivePayWithdrawBackRsp
+	var rsp FivePayDepositByF2fBackRsp
 	mapstructure.Decode(paramDecrypt, &rsp)
 
 	// 3. 处理业务逻辑

@@ -8,16 +8,16 @@ import (
 	"log"
 )
 
-func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{}, error) {
-	//rawURL := cli.Params.WithdrawUrlByEn
+func (cli *Client) DepositByF2f(req FivePayDepositByF2fHandleReq) (map[string]interface{}, error) {
+	//rawURL := cli.Params.DepositUrlByEn
 
 	var param map[string]interface{}
 	mapstructure.Decode(req, &param)
 
 	//补充字段
 	param["merchantId"] = cast.ToInt(cli.Params.MerchantId)
-	param["returnUrl"] = cast.ToString(cli.Params.ReturnUrlByWithdraw)
-	param["notifyUrl"] = cast.ToString(cli.Params.NotifyUrlByWithdraw)
+	param["returnUrl"] = cast.ToString(cli.Params.ReturnUrlByDeposit)
+	param["notifyUrl"] = cast.ToString(cli.Params.NotifyUrlByDeposit)
 
 	// 1. 加密所有需要加密的参数
 	paramEncrypt, err := utils.EncryptAll(param, cli.Params.AccessKey)
@@ -33,15 +33,15 @@ func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{
 	fmt.Println("Final Params (with sign):", paramEncrypt)
 
 	if req.CurrencyCode == "VND" {
-		paramEncrypt["url"] = cli.Params.WithdrawUrlByVi
+		paramEncrypt["url"] = cli.Params.DepositByF2fUrlByVi
 	} else if req.CurrencyCode == "IDR" {
-		paramEncrypt["url"] = cli.Params.WithdrawUrlById
+		paramEncrypt["url"] = cli.Params.DepositByF2fUrlById
 	} else if req.CurrencyCode == "THB" {
-		paramEncrypt["url"] = cli.Params.WithdrawUrlByTh
+		paramEncrypt["url"] = cli.Params.DepositByF2fUrlByTh
 	} else if req.CurrencyCode == "CNY" {
-		paramEncrypt["url"] = cli.Params.WithdrawUrlByCn
+		paramEncrypt["url"] = cli.Params.DepositByF2fUrlByCn
 	} else {
-		paramEncrypt["url"] = cli.Params.WithdrawUrlByEn
+		paramEncrypt["url"] = cli.Params.DepositByF2fUrlByEn
 	}
 	return paramEncrypt, nil
 }

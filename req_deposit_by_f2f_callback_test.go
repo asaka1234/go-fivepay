@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestWithdrawCallback(t *testing.T) {
+func TestDepositByF2fCallback(t *testing.T) {
 	vLog := VLog{}
 	//构造client
 	cli := NewClient(vLog, &FivePayInitParams{
@@ -19,7 +19,7 @@ func TestWithdrawCallback(t *testing.T) {
 		RETURN_URL,
 	})
 
-	req := FivePayWithdrawBackReq{
+	req := FivePayDepositByF2fBackReq{
 		OrderNo:         "fa92dfaae91c981f",
 		MerchantId:      2,
 		MemberId:        "c5a707fc7552c8408437b310a4b5d8a2",
@@ -32,7 +32,7 @@ func TestWithdrawCallback(t *testing.T) {
 	}
 
 	//发请求
-	err := cli.WithdrawCallBack(req, WithdrawBackProcessor)
+	err := cli.DepositByF2fCallBack(req, DepositByF2fBackProcessor)
 	if err != nil {
 		fmt.Println("fail")
 		return
@@ -42,7 +42,7 @@ func TestWithdrawCallback(t *testing.T) {
 	return
 }
 
-func WithdrawBackProcessor(rsp FivePayWithdrawBackRsp) error {
-	fmt.Printf("withdraw callback rsp: %v\n", rsp)
+func DepositByF2fBackProcessor(rsp FivePayDepositByF2fBackRsp) error {
+	fmt.Printf("deposit by f2f callback rsp: %v\n", rsp)
 	return nil
 }

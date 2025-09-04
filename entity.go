@@ -55,9 +55,13 @@ type FivePayPaymentBackReq struct {
 	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` // 商户订单ID
 	Status          string `json:"status" mapstructure:"status"`                   // 订单状态 1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
 	Sign            string `json:"sign" mapstructure:"sign"`
-	// 加上name,email为了验签用
-	Name  string `json:"name" mapstructure:"name"`
-	Email string `json:"email" mapstructure:"email"`
+}
+
+type FivePayPaymentBackRsp struct {
+	OrderNo         string `json:"orderNo" mapstructure:"orderNo"`                 // 平台给商家的唯一ID
+	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` // 商户订单号
+	OrderAmount     string `json:"orderAmount" mapstructure:"orderAmount"`         // 订单金额
+	Status          string `json:"status" mapstructure:"status"`                   // 订单状态 1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
 }
 
 // withdraw
@@ -97,9 +101,13 @@ type FivePayWithdrawBackReq struct {
 	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` //商家未分配给订单的唯一订单
 	Status          string `json:"status" mapstructure:"status"`                   //1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
 	Sign            string `json:"sign" mapstructure:"sign"`
-	// 加上name,email为了验签用
-	Name  string `json:"name" mapstructure:"name"`
-	Email string `json:"email" mapstructure:"email"` //签名
+}
+
+type FivePayWithdrawBackRsp struct {
+	OrderNo         string `json:"orderNo" mapstructure:"orderNo"`                 // 平台给商家的唯一ID
+	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` // 商户订单号
+	OrderAmount     string `json:"orderAmount" mapstructure:"orderAmount"`         // 订单金额
+	Status          string `json:"status" mapstructure:"status"`                   // 订单状态 1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
 }
 
 // withdraw by cw

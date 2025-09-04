@@ -160,7 +160,7 @@ func DecryptAll(params map[string]interface{}, accessKey string) (map[string]int
 	paramDecrypt["merchantId"] = params["merchantId"] // merchantId 不解密
 
 	// 其他字段解密
-	fieldsToDecrypt := []string{"orderAmount", "currencyCode", "merchantOrderNo", "memberId"}
+	fieldsToDecrypt := []string{"orderNo", "status", "orderAmount", "currencyCode", "merchantOrderNo", "memberId"}
 	for _, field := range fieldsToDecrypt {
 		val := strings.ToUpper(params[field].(string))
 

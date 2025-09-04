@@ -13,26 +13,20 @@ func (cli *Client) PaymentCallback(req FivePayPaymentBackReq, processor func(Fiv
 	var params map[string]interface{}
 	mapstructure.Decode(req, &params)
 
-	paramsNew := params
-	delete(params, "name")
-	delete(params, "email")
-
 	// 1. 验证签名
 	signature := utils.DepositSign(params)
 	if signature != req.Sign {
 		return errors.New("sign verify error")
 	}
 
-	paramsNew["notifyUrl"] = cli.Params.NotifyUrlByDeposit
-	paramsNew["returnUrl"] = cli.Params.ReturnUrl
+	params["notifyUrl"] = cli.Params.NotifyUrlByDeposit
+	params["returnUrl"] = cli.Params.ReturnUrlByDeposit
 
 	// 2. 解密所有需要解密的参数
-	paramDecrypt, err := utils.DecryptAll(paramsNew, cli.Params.AccessKey)
+	paramDecrypt, err := utils.DecryptAll(params, cli.Params.AccessKey)
 	if err != nil {
 		log.Fatalf("Error decrypting parameters: %v", err)
 	}
-	paramDecrypt["name"] = req.Name
-	paramDecrypt["email"] = req.Email
 	fmt.Println("FivePay deposit callback decrypted Params :", paramDecrypt)
 
 	// 3. 处理业务逻辑
@@ -44,26 +38,20 @@ func (cli *Client) WithdrawCallBack(req FivePayWithdrawBackReq, processor func(F
 	var params map[string]interface{}
 	mapstructure.Decode(req, &params)
 
-	paramsNew := params
-	delete(params, "name")
-	delete(params, "email")
-
 	// 1. 验证签名
 	signature := utils.DepositSign(params)
 	if signature != req.Sign {
 		return errors.New("sign verify error")
 	}
 
-	paramsNew["notifyUrl"] = cli.Params.NotifyUrlByDeposit
-	paramsNew["returnUrl"] = cli.Params.ReturnUrl
+	params["notifyUrl"] = cli.Params.NotifyUrlByWithdraw
+	params["returnUrl"] = cli.Params.NotifyUrlByWithdraw
 
 	// 2. 解密所有需要解密的参数
-	paramDecrypt, err := utils.DecryptAll(paramsNew, cli.Params.AccessKey)
+	paramDecrypt, err := utils.DecryptAll(params, cli.Params.AccessKey)
 	if err != nil {
 		log.Fatalf("Error decrypting parameters: %v", err)
 	}
-	paramDecrypt["name"] = req.Name
-	paramDecrypt["email"] = req.Email
 	fmt.Println("FivePay deposit callback decrypted Params :", paramDecrypt)
 
 	// 3. 处理业务逻辑

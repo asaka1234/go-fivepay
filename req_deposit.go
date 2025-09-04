@@ -17,7 +17,7 @@ func (cli *Client) Deposit(req FivePayPaymentHandleReq) (map[string]interface{},
 
 	//补充字段
 	param["merchantId"] = cast.ToInt(cli.Params.MerchantId)
-	param["returnUrl"] = cast.ToString(cli.Params.ReturnUrl)
+	param["returnUrl"] = cast.ToString(cli.Params.ReturnUrlByDeposit)
 	param["notifyUrl"] = cast.ToString(cli.Params.NotifyUrlByDeposit)
 	log.Printf("param: %+v", param)
 

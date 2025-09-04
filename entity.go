@@ -15,7 +15,8 @@ type FivePayInitParams struct {
 	WithdrawUrlByTh     string `json:"withdrawUrlByTh" mapstructure:"withdrawUrlByTh" config:"withdrawUrlByTh"  yaml:"withdrawUrlByTh"`                 // 请求三方出金地址-泰国
 	NotifyUrlByDeposit  string `json:"notifyUrlByDeposit" mapstructure:"notifyUrlByDeposit" config:"notifyUrlByDeposit"  yaml:"notifyUrlByDeposit"`     //入金回调通知地址
 	NotifyUrlByWithdraw string `json:"notifyUrlByWithdraw" mapstructure:"notifyUrlByWithdraw" config:"notifyUrlByWithdraw"  yaml:"notifyUrlByWithdraw"` //出金回调通知地址
-	ReturnUrl           string `json:"returnUrl" mapstructure:"returnUrl" config:"returnUrl"  yaml:"returnUrl"`                                         //付款页重定向到该URL
+	ReturnUrlByDeposit  string `json:"returnUrlByDeposit" mapstructure:"returnUrlByDeposit" config:"returnUrlByDeposit"  yaml:"returnUrlByDeposit"`
+	ReturnUrlByWithdraw string `json:"returnUrlByWithdraw" mapstructure:"returnUrlByWithdraw" config:"returnUrlByWithdraw"  yaml:"returnUrlByWithdraw"` //付款页重定向到该URL
 }
 
 // pay

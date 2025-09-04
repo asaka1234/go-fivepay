@@ -16,7 +16,7 @@ func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{
 
 	//补充字段
 	param["merchantId"] = cast.ToInt(cli.Params.MerchantId)
-	param["returnUrl"] = cast.ToString(cli.Params.ReturnUrl)
+	param["returnUrl"] = cast.ToString(cli.Params.ReturnUrlByWithdraw)
 	param["notifyUrl"] = cast.ToString(cli.Params.NotifyUrlByWithdraw)
 
 	// 1. 加密所有需要加密的参数

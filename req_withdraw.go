@@ -33,15 +33,15 @@ func (cli *Client) Withdraw(req FivePayWithdrawHandleReq) (map[string]interface{
 	fmt.Println("Final Params (with sign):", paramEncrypt)
 
 	if req.CurrencyCode == "VND" {
-		paramEncrypt["url"] = cli.Params.DepositUrlByVi
+		paramEncrypt["url"] = cli.Params.WithdrawUrlByVi
 	} else if req.CurrencyCode == "IDR" {
-		paramEncrypt["url"] = cli.Params.DepositUrlById
+		paramEncrypt["url"] = cli.Params.WithdrawUrlById
 	} else if req.CurrencyCode == "THB" {
-		paramEncrypt["url"] = cli.Params.DepositUrlByTh
+		paramEncrypt["url"] = cli.Params.WithdrawUrlByTh
 	} else if req.CurrencyCode == "CNY" {
-		paramEncrypt["url"] = cli.Params.DepositUrlByCn
+		paramEncrypt["url"] = cli.Params.WithdrawUrlByCn
 	} else {
-		paramEncrypt["url"] = cli.Params.DepositUrlByEn
+		paramEncrypt["url"] = cli.Params.WithdrawUrlByEn
 	}
 	return paramEncrypt, nil
 }

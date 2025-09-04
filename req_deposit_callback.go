@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-func (cli *Client) PaymentCallback(req FivePayPaymentBackReq, processor func(FivePayPaymentBackReq, map[string]interface{}) error) error {
+func (cli *Client) PaymentCallback(req FivePayPaymentBackReq, processor func(FivePayPaymentBackRsp) error) error {
 	log.Printf("FivePay#deposit#back#req: %+v", req)
 	var params map[string]interface{}
 	mapstructure.Decode(req, &params)
@@ -29,11 +29,14 @@ func (cli *Client) PaymentCallback(req FivePayPaymentBackReq, processor func(Fiv
 	}
 	fmt.Println("FivePay deposit callback decrypted Params :", paramDecrypt)
 
+	var rsp FivePayPaymentBackRsp
+	mapstructure.Decode(paramDecrypt, &rsp)
+
 	// 3. 处理业务逻辑
-	return processor(req, paramDecrypt)
+	return processor(rsp)
 }
 
-func (cli *Client) WithdrawCallBack(req FivePayWithdrawBackReq, processor func(FivePayWithdrawBackReq, map[string]interface{}) error) error {
+func (cli *Client) WithdrawCallBack(req FivePayWithdrawBackReq, processor func(FivePayWithdrawBackRsp) error) error {
 	log.Printf("FivePay#withdraw#back#req: %+v", req)
 	var params map[string]interface{}
 	mapstructure.Decode(req, &params)
@@ -54,6 +57,9 @@ func (cli *Client) WithdrawCallBack(req FivePayWithdrawBackReq, processor func(F
 	}
 	fmt.Println("FivePay deposit callback decrypted Params :", paramDecrypt)
 
+	var rsp FivePayWithdrawBackRsp
+	mapstructure.Decode(paramDecrypt, &rsp)
+
 	// 3. 处理业务逻辑
-	return processor(req, paramDecrypt)
+	return processor(rsp)
 }

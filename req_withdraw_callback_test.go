@@ -8,7 +8,16 @@ import (
 func TestWithdrawCallback(t *testing.T) {
 	vLog := VLog{}
 	//构造client
-	cli := NewClient(vLog, &FivePayInitParams{MERCHANT_ID, ACCESS_KEY, DEPOSIT_URL_BY_EN, WITHDRAW_URL_BY_EN, NOTIFY_URL_BY_DEPOSIT, NOTIFY_URL_BY_WITHDRAW, RETURN_URL})
+	cli := NewClient(vLog, &FivePayInitParams{
+		MERCHANT_ID,
+		ACCESS_KEY,
+		DEPOSIT_URL_BY_EN,
+		WITHDRAW_URL_BY_EN,
+		NOTIFY_URL_BY_DEPOSIT,
+		NOTIFY_URL_BY_WITHDRAW,
+		RETURN_URL,
+		RETURN_URL,
+	})
 
 	req := FivePayWithdrawBackReq{
 		OrderNo:         "fa92dfaae91c981f",
@@ -20,8 +29,6 @@ func TestWithdrawCallback(t *testing.T) {
 		CurrencyCode:    "4b798adf04415171",
 		Status:          "55c429d4262a42c9",
 		Sign:            "dd1bd407e4268a0f669a2497817bef4b",
-		Name:            "feng",
-		Email:           "jane.y@logtec.com",
 	}
 
 	//发请求
@@ -35,6 +42,7 @@ func TestWithdrawCallback(t *testing.T) {
 	return
 }
 
-func WithdrawBackProcessor(req FivePayWithdrawBackReq, params map[string]interface{}) error {
+func WithdrawBackProcessor(rsp FivePayWithdrawBackRsp) error {
+	fmt.Printf("withdraw callback rsp: %v\n", rsp)
 	return nil
 }

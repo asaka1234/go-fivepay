@@ -13,6 +13,11 @@ type FivePayInitParams struct {
 	DepositByF2fUrlById string `json:"depositByF2fUrlById" mapstructure:"depositByF2fUrlById" config:"depositByF2fUrlById"  yaml:"depositByF2fUrlById"` // 请求三方入金地址-印尼
 	DepositByF2fUrlByVi string `json:"depositByF2fUrlByVi" mapstructure:"depositByF2fUrlByVi" config:"depositByF2fUrlByVi"  yaml:"depositByF2fUrlByVi"` // 请求三方入金地址-越南
 	DepositByF2fUrlByTh string `json:"depositByF2fUrlByTh" mapstructure:"depositByF2fUrlByTh" config:"depositByF2fUrlByTh"  yaml:"depositByF2fUrlByTh"` // 请求三方入金地址-泰国
+	WithdrawUrlByCn     string `json:"withdrawUrlByCn" mapstructure:"withdrawUrlByCn" config:"withdrawUrlByCn"  yaml:"withdrawUrlByCn"`
+	WithdrawUrlByEn     string `json:"withdrawUrlByEn" mapstructure:"withdrawUrlByEn" config:"withdrawUrlByEn"  yaml:"withdrawUrlByEn"`
+	WithdrawUrlById     string `json:"withdrawUrlById" mapstructure:"withdrawUrlById" config:"withdrawUrlById"  yaml:"withdrawUrlById"`
+	WithdrawUrlByVi     string `json:"withdrawUrlByVi" mapstructure:"withdrawUrlByVi" config:"withdrawUrlByVi"  yaml:"withdrawUrlByVi"`
+	WithdrawUrlByTh     string `json:"withdrawUrlByTh" mapstructure:"withdrawUrlByTh" config:"withdrawUrlByTh"  yaml:"withdrawUrlByTh"`
 	NotifyUrlByDeposit  string `json:"notifyUrlByDeposit" mapstructure:"notifyUrlByDeposit" config:"notifyUrlByDeposit"  yaml:"notifyUrlByDeposit"`     //入金回调通知地址
 	NotifyUrlByWithdraw string `json:"notifyUrlByWithdraw" mapstructure:"notifyUrlByWithdraw" config:"notifyUrlByWithdraw"  yaml:"notifyUrlByWithdraw"` //出金回调通知地址
 	ReturnUrlByDeposit  string `json:"returnUrlByDeposit" mapstructure:"returnUrlByDeposit" config:"returnUrlByDeposit"  yaml:"returnUrlByDeposit"`
@@ -109,46 +114,51 @@ type FivePayDepositByF2fBackRsp struct {
 	Status          string `json:"status" mapstructure:"status"`                   // 订单状态 1 – New order 2 – Waiting for payment 3 – Member has paid 4 – The payment has been confirmed 6 – Expired 7 – Cancelled
 }
 
-// deposit - cw
-type FivePayWithdrawByCwReq struct {
+// withdraw
+type FivePayWithdrawReq struct {
 	MerchantId      int    `json:"merchantId" mapstructure:"merchantId"`           //平台给商家的唯一ID
-	TokenId         int    `json:"tokenId" mapstructure:"tokenId"`                 //1 – USDT 2 – ETH 4 – BNB 5 – BTC
-	OrderAmount     string `json:"orderAmount" mapstructure:"orderAmount"`         //订单金额，加密时必须为小数点后6位
 	MerchantOrderNo string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"` //商家未分配给订单的唯一订单
-	NnotifyUrl      string `json:"notifyUrl" mapstructure:"notifyUrl"`             //回调通知地址
-	ReturnUrl       string `json:"returnUrl" mapstructure:"returnUrl"`             //支付跳转地址
-	Sign            string `json:"sign" mapstructure:"sign"`                       //签名
+	Wallet          string `json:"wallet" mapstructure:"wallet"`                   // 钱包 OTC Buy – OTCBuy Wallet/Coin2Coin – Coin2Coin/Wallet Fiat 2 Fiat – Fiat2Fiat/Wallet Crypto Wallet – Crypto Wallet
+
+	Token              string `json:"token" mapstructure:"token"`                           //
+	WithdrawalAmount   string `json:"withdrawalAmount" mapstructure:"withdrawalAmount"`     //出金金额
+	ByReceivableAmount bool   `json:"byReceivableAmount" mapstructure:"byReceivableAmount"` //按应收金额 （如果金额为Withdrawalamount，则填写false，如果金额为ReceivableAmount，则填写True）
+	WalletAddress      string `json:"alletAddress" mapstructure:"walletAddress"`            //钱包地址
+	//BeneficiaryName          string `json:"beneficiaryName" mapstructure:"beneficiaryName"`                   //收款人姓名
+	//BeneficiaryAccountNumber string `json:"beneficiaryAccountNumber" mapstructure:"beneficiaryAccountNumber"` //收款人账号
+
+	//BeneficiaryBank          string `json:"BeneficiaryBank" mapstructure:"BeneficiaryBank"`                   //受益人银行
+	//BeneficiaryBankAddress   string `json:"BeneficiaryBankAddress" mapstructure:"BeneficiaryBankAddress"`     //收款人银行地址
+	//BeneficiaryBankCode      string `json:"BeneficiaryBankCode" mapstructure:"BeneficiaryBankCode"`           //收款人银行代码
+	//BeneficiaryBankSwiftCode string `json:"BeneficiaryBankSwiftCode" mapstructure:"BeneficiaryBankSwiftCode"` //受益人银行Swift代码
+	//BeneficiaryEmail         string `json:"BeneficiaryEmail" mapstructure:"BeneficiaryEmail"`                 //Beneficiary电子邮件
+	//BeneficiaryPhoneNumber   string `json:"BeneficiaryPhoneNumber" mapstructure:"BeneficiaryPhoneNumber"`     //受益人电话号码
+	//IFSC                     string `json:"IFSC" mapstructure:"IFSC"`                                         //收款银行 IFSC 为法币2法币钱包提款，强制性
+	//PaymentMethod            string `json:"PaymentMethod" mapstructure:"PaymentMethod"`                       //
+	//TaxNumber                string `json:"TaxNumber" mapstructure:"TaxNumber"`                               //仅当付款方式为 EVP 时，BRL 提款的税号
+	NotifyUrl string `json:"notifyUrl" mapstructure:"notifyUrl"` //通知回调地址
+	//Sign                     string `json:"Sign" mapstructure:"Sign"`                                         //签名
+	CurrencyCode string `json:"currencyCode" mapstructure:"currencyCode"` //币种
 }
 
-type FivePayWithdrawByCwRsp struct {
-	Success    bool   `json:"success" mapstructure:"success"`       //true false
-	Message    string `json:"message" mapstructure:"message"`       //失败消息
-	RequestURL string `json:"requestURL" mapstructure:"requestURL"` //如果订单创建成功，返回付款页面地址，请重定向到此网址进行付款。
+type FivePayWithdrawSubDataRsp struct {
+	Status  bool   `json:"status" mapstructure:"status"` //true false
+	Message string `json:"message" mapstructure:"message"`
+	Data    string `json:"data" mapstructure:"data"` //请求时传的参数
 }
 
-//type FivePayWithdrawByCwBackReq struct {
-//	MerchantId          int    `json:"merchantId" mapstructure:"merchantId"`                   //平台给商家的唯一ID
-//	OrderAmount         string `json:"orderAmount" mapstructure:"orderAmount"`                 //订单金额，加密时必须为小数点后6位
-//	TotalReceivedAmount string `json:"totalReceivedAmount" mapstructure:"totalReceivedAmount"` //订单中实际收到的金额
-//	MerchantOrderNo     string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"`         //商家未分配给订单的唯一订单
-//	Status              string `json:"status" mapstructure:"status"`                           //订单状态 1 – 等待付款 2 – 已收到部分付款 3 – 已确认全额付款 4 – 已过期 5 – 取消
-//	Sign                string `json:"sign" mapstructure:"sign"`                               //签名
-//}
-
-type Transaction struct {
-	ChainTypeId          int    `json:"chainTypeId" mapstructure:"chainTypeId"`                   // 区块链ID 2 – ERC20 USDT/ETH 4 – TRC20 USDT 5 – BEP20 USDT/BNB
-	TokenId              int    `json:"tokenId" mapstructure:"tokenId"`                           //1 – ERC20 USDT 2 – ETH 22 – TRC20 USDT 24 – BNB 25 – BEP20 USDT
-	DepositWalletAddress string `json:"depositWalletAddress" mapstructure:"depositWalletAddress"` //存款人的钱包地址
-	DepositAmount        string `json:"depositAmount" mapstructure:"depositAmount"`               //存款金额
-	TransactionHash      string `json:"transactionHash" mapstructure:"transactionHash"`           //区块链交易哈希
+type FivePayWithdrawRsp struct {
+	Success bool                        `json:"success" mapstructure:"success"` //true false
+	Data    []FivePayWithdrawSubDataRsp `json:"data" mapstructure:"data"`       //请求时传的参数
 }
 
-type FivePayWithdrawByCwBackReq struct {
-	MerchantId          int           `json:"merchantId" mapstructure:"merchantId"`                   //平台给商家的唯一ID
-	OrderAmount         string        `json:"orderAmount" mapstructure:"orderAmount"`                 //订单金额，加密时必须为小数点后6位
-	TotalReceivedAmount string        `json:"totalReceivedAmount" mapstructure:"totalReceivedAmount"` //订单中实际收到的金额
-	MerchantOrderNo     string        `json:"merchantOrderNo" mapstructure:"merchantOrderNo"`         //商家未分配给订单的唯一订单
-	Status              string        `json:"status" mapstructure:"status"`                           //订单状态 1 – 等待付款 2 – 已收到部分付款 3 – 已确认全额付款 4 – 已过期 5 – 取消
-	Sign                string        `json:"sign" mapstructure:"sign"`                               //签名
-	Transaction         []Transaction `json:"transaction" mapstructure:"transaction"`                 //交易明细
+type FivePayWithdrawBackReq struct {
+	WithdrawalId      string `json:"withdrawalId" mapstructure:"withdrawalId"`           //提款ID 平台给商家的唯一ID
+	MerchantOrderNo   string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"`     //商家未分配给订单的唯一订单
+	WithdrawalAmount  string `json:"withdrawalAmount" mapstructure:"withdrawalAmount"`   //提款金额
+	WithdrawalCharges string `json:"withdrawalCharges" mapstructure:"withdrawalCharges"` //提款费用
+	Status            int    `json:"status" mapstructure:"status"`                       //订单状态1 – 待确认2 – 进行中3 – 已批准4 – 已拒绝
+	RejectedReason    string `json:"rejectedReason" mapstructure:"rejectedReason"`       //交易明细
+	Sign              string `json:"sign" mapstructure:"sign"`                           //签名
+	TransactionHash   string `json:"transactionHash" mapstructure:"transactionHash"`     //交易hash
 }

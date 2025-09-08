@@ -14,7 +14,6 @@ import (
 	"log"
 	"sort"
 	"strings"
-	"time"
 )
 
 // 字母顺序a-z排序，并串联对应的值（value1value2 ...valueN）转换为字符串，先使用 SHA1 签名，然后使用 MD5 签名，并转换为小写字母
@@ -266,40 +265,38 @@ func DepositBackVerify(params map[string]interface{}, signKey string) (bool, err
 	return signature == currentSignature, nil
 }
 
-// MD5({MerchantCode}{TransactionId}{MemberCode}{Amount}{CurrencyCode}){TransactionDateTime}){ToBankAccountNumber}){SecurityCode}))
-func WithdrawSign(params map[string]interface{}, key string) string {
-
-	//参与签名的key
-	signKeyList := []string{"MerchantCode", "TransactionID", "MemberCode", "Amount", "CurrencyCode", "TransactionDateTime", "toBankAccountNumber", "SecurityCode"}
-
-	//拼凑字符串
-	var sb strings.Builder
-	for _, k := range signKeyList {
-		if k != "SecurityCode" {
-			value := cast.ToString(params[k])
-
-			if k == "TransactionDateTime" {
-				t, _ := time.Parse("2006-01-02 03:04:05PM", value)
-				value = t.Format("20060102150405")
-			}
-			//fmt.Printf("%s=>%s\n", k, value)
-			sb.WriteString(value)
-		} else {
-			//fmt.Printf("%s=>%s\n", k, key)
-			sb.WriteString(key)
-		}
+// 字母顺序a-z排序，并串联对应的值（value1value2 ...valueN）转换为字符串，先使用 SHA1 签名，然后使用 MD5 签名，并转换为小写字母
+func WithdrawSign(params map[string]interface{}) string {
+	keys := make([]string, 0, len(params))
+	for k := range params {
+		keys = append(keys, k)
 	}
-	signStr := sb.String()
+	sort.Strings(keys) // 按键排序
+
+	var strBuilder strings.Builder
+	for _, k := range keys {
+		// 跳过 'sign' 字段自身，如果它存在于 params 中
+		if k == "sign" || k == "paymentMethod" {
+			continue
+		}
+		strBuilder.WriteString(params[k].(string))
+	}
+	signStr := strBuilder.String()
 
 	// Log before MD5
-	log.Printf("H2PayService#MD5#deposit#before, s: %s", signStr)
+	log.Printf("Fivepay#MD5#withdraw#before, s: %s", signStr)
+
+	// 创建SHA1哈希
+	sha1Hash := sha1.Sum([]byte(signStr)) // sha1.Sum 直接计算并返回哈希值
+	sha1HashStr := hex.EncodeToString(sha1Hash[:])
+	log.Printf("Fivepay#SHA1#withdraw#end, s: %s", hex.EncodeToString(sha1Hash[:]))
 
 	// Generate MD5 hash
-	hash := md5.Sum([]byte(signStr))
+	hash := md5.Sum([]byte(sha1HashStr))
 	result := hex.EncodeToString(hash[:])
 
 	// Log after MD5
-	log.Printf("H2PayService#MD5#deposit#end, s: %s", result)
+	log.Printf("Fivepay#MD5#withdraw#end, s: %s", result)
 
 	return result
 }
@@ -335,6 +332,34 @@ func WithdrawBackSign(params map[string]interface{}, key string) string {
 	log.Printf("H2PayService#MD5#deposit#end, s: %s", result)
 
 	return result
+}
+
+// EncryptAllByWithdraw 加密所有需要加密的参数
+func EncryptAllByWithdraw(params map[string]interface{}, accessKey string) (map[string]interface{}, error) {
+	paramEncrypt := make(map[string]interface{})
+	paramEncrypt["merchantId"] = params["merchantId"] // merchantId 不加密
+	paramEncrypt["notifyUrl"] = params["notifyUrl"]   // notifyUrl 不加密
+
+	// 其他字段加密
+	fieldsToEncrypt := []string{
+		"byReceivableAmount", "merchantOrderNo",
+		"token", "wallet", "walletAddress", "withdrawalAmount",
+	}
+	valStr := ""
+	for _, field := range fieldsToEncrypt {
+		if field == "byReceivableAmount" {
+			valStr = cast.ToString(params[field].(bool))
+		} else {
+			valStr = cast.ToString(params[field].(string))
+		}
+		encryptedVal, err := encrypt(valStr, accessKey)
+		if err != nil {
+			return nil, fmt.Errorf("failed to encrypt %s: %w", field, err)
+		}
+		paramEncrypt[field] = encryptedVal
+	}
+
+	return paramEncrypt, nil
 }
 
 func WithdrawBackVerify(params map[string]interface{}, signKey string) (bool, error) {

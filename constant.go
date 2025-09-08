@@ -14,11 +14,11 @@ const (
 	DEPOSIT_URL_BY_EN = "http://uat.en-payment.my5pay.com/f2fOrder/createorder"
 	//DEPOSIT_URL_BY_EN = "https://en-payment.my5pay.com/f2fOrder/createorder"
 	//DEPOSIT_URL_BY_ID = "http://uat.id-payment.my5pay.com/f2fOrder/createorder"
-	//DEPOSIT_URL_BY_VI = "http://uat.vi-payment.my5pay.com/f2fOrder/createorder"
+	DEPOSIT_URL_BY_VI = "http://uat.vi-payment.my5pay.com/f2fOrder/createorder"
 	//DEPOSIT_URL_BY_TH = "http://uat.th-payment.my5pay.com/f2fOrder/createorder"
 
 	//WITHDRAW_URL_BY_CN = "https://cn-payment.my5pay.com/f2fOrder/checkout"
-	WITHDRAW_URL_BY_EN = "http://uat.en-payment.my5pay.com/f2fOrder/checkout"
+	WITHDRAW_URL_BY_EN = "http://uat.en-payment.my5pay.com/Withdrawal/SubmitWithdrawal"
 	//WITHDRAW_URL_BY_EN = "https://en-payment.my5pay.com/f2fOrder/checkout"
 	//WITHDRAW_URL_BY_ID = "http://uat.id-payment.my5pay.com/f2fOrder/checkout"
 	//WITHDRAW_URL_BY_VI = "http://uat.vi-payment.my5pay.com/f2fOrder/checkout"

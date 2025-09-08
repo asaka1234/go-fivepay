@@ -343,7 +343,9 @@ func EncryptAllByWithdraw(params map[string]interface{}, accessKey string) (map[
 	// 其他字段加密
 	fieldsToEncrypt := []string{
 		"byReceivableAmount", "merchantOrderNo",
-		"token", "wallet", "walletAddress", "withdrawalAmount",
+		"token", "wallet", "withdrawalAmount",
+		//"walletAddress",
+		"beneficiaryName", "beneficiaryAccountNumber", "beneficiaryBank",
 	}
 	valStr := ""
 	for _, field := range fieldsToEncrypt {

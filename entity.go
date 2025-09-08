@@ -123,11 +123,11 @@ type FivePayWithdrawReq struct {
 	Token              string `json:"token" mapstructure:"token"`                           //
 	WithdrawalAmount   string `json:"withdrawalAmount" mapstructure:"withdrawalAmount"`     //出金金额
 	ByReceivableAmount bool   `json:"byReceivableAmount" mapstructure:"byReceivableAmount"` //按应收金额 （如果金额为Withdrawalamount，则填写false，如果金额为ReceivableAmount，则填写True）
-	WalletAddress      string `json:"alletAddress" mapstructure:"walletAddress"`            //钱包地址
-	//BeneficiaryName          string `json:"beneficiaryName" mapstructure:"beneficiaryName"`                   //收款人姓名
-	//BeneficiaryAccountNumber string `json:"beneficiaryAccountNumber" mapstructure:"beneficiaryAccountNumber"` //收款人账号
+	//WalletAddress            string `json:"alletAddress" mapstructure:"walletAddress"`                        //钱包地址
+	BeneficiaryName          string `json:"beneficiaryName" mapstructure:"beneficiaryName"`                   //收款人姓名
+	BeneficiaryAccountNumber string `json:"beneficiaryAccountNumber" mapstructure:"beneficiaryAccountNumber"` //收款人账号
 
-	//BeneficiaryBank          string `json:"BeneficiaryBank" mapstructure:"BeneficiaryBank"`                   //受益人银行
+	BeneficiaryBank string `json:"beneficiaryBank" mapstructure:"beneficiaryBank"` //受益人银行
 	//BeneficiaryBankAddress   string `json:"BeneficiaryBankAddress" mapstructure:"BeneficiaryBankAddress"`     //收款人银行地址
 	//BeneficiaryBankCode      string `json:"BeneficiaryBankCode" mapstructure:"BeneficiaryBankCode"`           //收款人银行代码
 	//BeneficiaryBankSwiftCode string `json:"BeneficiaryBankSwiftCode" mapstructure:"BeneficiaryBankSwiftCode"` //受益人银行Swift代码
@@ -138,7 +138,6 @@ type FivePayWithdrawReq struct {
 	//TaxNumber                string `json:"TaxNumber" mapstructure:"TaxNumber"`                               //仅当付款方式为 EVP 时，BRL 提款的税号
 	NotifyUrl string `json:"notifyUrl" mapstructure:"notifyUrl"` //通知回调地址
 	//Sign                     string `json:"Sign" mapstructure:"Sign"`                                         //签名
-	CurrencyCode string `json:"currencyCode" mapstructure:"currencyCode"` //币种
 }
 
 type FivePayWithdrawSubDataRsp struct {

@@ -18,19 +18,17 @@ func (cli *Client) Withdraw(req FivePayWithdrawReq) (*FivePayWithdrawReq, error)
 
 	//发送请求的psp地址
 	rawURL := ""
-	if req.CurrencyCode == "VND" {
+	if req.Token == "VND" {
 		rawURL = cli.Params.WithdrawUrlByVi
-	} else if req.CurrencyCode == "IDR" {
+	} else if req.Token == "IDR" {
 		rawURL = cli.Params.WithdrawUrlById
-	} else if req.CurrencyCode == "THB" {
+	} else if req.Token == "THB" {
 		rawURL = cli.Params.WithdrawUrlByTh
-	} else if req.CurrencyCode == "CNY" {
+	} else if req.Token == "CNY" {
 		rawURL = cli.Params.WithdrawUrlByCn
 	} else {
 		rawURL = cli.Params.WithdrawUrlByEn
 	}
-
-	delete(param, "currencyCode")
 
 	//补充字段
 	param["merchantId"] = cast.ToString(cli.Params.MerchantId)

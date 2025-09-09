@@ -167,4 +167,5 @@ type FivePayWithdrawBackRsp struct {
 	WithdrawalId      string `json:"withdrawalId" mapstructure:"withdrawalId"`           // 出金订单ID
 	WithdrawalAmount  string `json:"withdrawalAmount" mapstructure:"withdrawalAmount"`   // 出金订单金额
 	WithdrawalCharges string `json:"withdrawalCharges" mapstructure:"withdrawalCharges"` //
+	Status            string `json:"status" mapstructure:"status"`                       // 订单状态1 – 待确认2 – 进行中3 – 已批准4 – 已拒绝
 }

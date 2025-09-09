@@ -176,6 +176,29 @@ func DecryptAll(params map[string]interface{}, accessKey string) (map[string]int
 	return paramDecrypt, nil
 }
 
+// DecryptWithdrawAll 解密所有需要解密的参数
+func DecryptWithdrawAll(params map[string]interface{}, accessKey string) (map[string]interface{}, error) {
+	paramDecrypt := make(map[string]interface{})
+
+	fieldsToDecrypt := []string{"merchantOrderNo", "status", "sign", "withdrawalAmount", "withdrawalCharges", "withdrawalId"}
+	for _, field := range fieldsToDecrypt {
+		if field != "sign" {
+			val := strings.ToUpper(params[field].(string))
+
+			decryptedVal, err := decrypt(val, accessKey)
+			if err != nil {
+				return nil, fmt.Errorf("failed to encrypt %s: %w", field, err)
+			}
+			paramDecrypt[field] = decryptedVal
+		}
+	}
+
+	paramDecrypt["notifyUrl"] = params["notifyUrl"]
+	paramDecrypt["returnUrl"] = params["returnUrl"]
+
+	return paramDecrypt, nil
+}
+
 func DepositBackSign(params map[string]interface{}) string {
 	keys := make([]string, 0, len(params))
 	for k := range params {

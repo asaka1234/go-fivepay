@@ -156,8 +156,15 @@ type FivePayWithdrawBackReq struct {
 	MerchantOrderNo   string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"`     //商家未分配给订单的唯一订单
 	WithdrawalAmount  string `json:"withdrawalAmount" mapstructure:"withdrawalAmount"`   //提款金额
 	WithdrawalCharges string `json:"withdrawalCharges" mapstructure:"withdrawalCharges"` //提款费用
-	Status            int    `json:"status" mapstructure:"status"`                       //订单状态1 – 待确认2 – 进行中3 – 已批准4 – 已拒绝
-	RejectedReason    string `json:"rejectedReason" mapstructure:"rejectedReason"`       //交易明细
-	Sign              string `json:"sign" mapstructure:"sign"`                           //签名
-	TransactionHash   string `json:"transactionHash" mapstructure:"transactionHash"`     //交易hash
+	Status            string `json:"status" mapstructure:"status"`                       //订单状态1 – 待确认2 – 进行中3 – 已批准4 – 已拒绝
+	//RejectedReason    string `json:"rejectedReason" mapstructure:"rejectedReason"`       //交易明细
+	Sign string `json:"sign" mapstructure:"sign"` //签名
+	//TransactionHash   string `json:"transactionHash" mapstructure:"transactionHash"`     //交易hash
+}
+
+type FivePayWithdrawBackRsp struct {
+	MerchantOrderNo   string `json:"merchantOrderNo" mapstructure:"merchantOrderNo"`     // 商户订单号
+	WithdrawalId      string `json:"withdrawalId" mapstructure:"withdrawalId"`           // 出金订单ID
+	WithdrawalAmount  string `json:"withdrawalAmount" mapstructure:"withdrawalAmount"`   // 出金订单金额
+	WithdrawalCharges string `json:"withdrawalCharges" mapstructure:"withdrawalCharges"` //
 }

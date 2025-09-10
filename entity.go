@@ -140,6 +140,20 @@ type FivePayWithdrawReq struct {
 	//Sign                     string `json:"Sign" mapstructure:"Sign"`                                         //签名
 }
 
+type FivePayWithdrawDecodeRsp struct {
+	MerchantId               float64 `json:"merchantId" mapstructure:"MerchantId"`                             //平台给商家的唯一ID
+	MerchantOrderNo          string  `json:"merchantOrderNo" mapstructure:"MerchantOrderNo"`                   //商家未分配给订单的唯一订单
+	Wallet                   string  `json:"wallet" mapstructure:"Wallet"`                                     // 钱包 OTC Buy – OTCBuy Wallet/Coin2Coin – Coin2Coin/Wallet Fiat 2 Fiat – Fiat2Fiat/Wallet Crypto Wallet – Crypto Wallet
+	Token                    string  `json:"token" mapstructure:"Token"`                                       //
+	WithdrawalAmount         string  `json:"withdrawalAmount" mapstructure:"WithdrawalAmount"`                 //出金金额
+	ByReceivableAmount       string  `json:"byReceivableAmount" mapstructure:"ByReceivableAmount"`             //按应收金额 （如果金额为Withdrawalamount，则填写false，如果金额为ReceivableAmount，则填写True）
+	BeneficiaryName          string  `json:"beneficiaryName" mapstructure:"BeneficiaryName"`                   //收款人姓名
+	BeneficiaryAccountNumber string  `json:"beneficiaryAccountNumber" mapstructure:"BeneficiaryAccountNumber"` //收款人账号
+	BeneficiaryBank          string  `json:"beneficiaryBank" mapstructure:"BeneficiaryBank"`                   //受益人银行
+	NotifyUrl                string  `json:"notifyUrl" mapstructure:"notifyUrl"`                               //通知回调地址
+	Sign                     string  `json:"Sign" mapstructure:"Sign"`                                         //签名
+}
+
 type FivePayWithdrawSubDataRsp struct {
 	Status  bool   `json:"status" mapstructure:"status"` //true false
 	Message string `json:"message" mapstructure:"message"`

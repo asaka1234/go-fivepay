@@ -2,6 +2,7 @@ package go_fivepay
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"github.com/asaka1234/go-fivepay/utils"
 	jsoniter "github.com/json-iterator/go"
@@ -11,7 +12,7 @@ import (
 )
 
 // 集成接口
-func (cli *Client) Withdraw(req FivePayWithdrawReq) (*FivePayWithdrawReq, error) {
+func (cli *Client) Withdraw(req FivePayWithdrawReq) (*FivePayWithdrawDecodeRsp, error) {
 
 	var param map[string]interface{}
 	mapstructure.Decode(req, &param)
@@ -84,8 +85,15 @@ func (cli *Client) Withdraw(req FivePayWithdrawReq) (*FivePayWithdrawReq, error)
 		return nil, fmt.Errorf("%s", result.Data[0].Message)
 	}
 
-	var rsp *FivePayWithdrawReq
-	mapstructure.Decode(result.Data[0].Data, &rsp)
+	var intermediate map[string]interface{}
+	if err = json.Unmarshal([]byte(result.Data[0].Data), &intermediate); err != nil {
+		return nil, fmt.Errorf("result unmarshal err: %+v", err.Error())
+	}
 
-	return rsp, nil
+	var rsp FivePayWithdrawDecodeRsp
+	if err = mapstructure.Decode(intermediate, &rsp); err != nil {
+		return nil, fmt.Errorf("result encode err: %+v", err.Error())
+	}
+
+	return &rsp, nil
 }
